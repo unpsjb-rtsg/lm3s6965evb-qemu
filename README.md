@@ -1,6 +1,6 @@
 # HelloWorld para la placa LM3S6965
 
-Programa de ejemplo que imprime el mensaje `Hello World!`, basado en la [demo de FreeRTOS para la QEMU](https://www.freertos.org/cortex-m3-qemu-lm3S6965-demo.html).
+Programa de ejemplo que imprime el mensaje `Hello World!`, basado en la [demo de FreeRTOS para QEMU](https://www.freertos.org/cortex-m3-qemu-lm3S6965-demo.html).
 
 ## Importar y compilar en Eclipse
 
