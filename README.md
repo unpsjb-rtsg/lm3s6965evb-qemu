@@ -4,11 +4,11 @@ Programa de ejemplo que imprime el mensaje `Hello World!`, basado en la [demo de
 
 ## Importar y compilar en Eclipse
 
-Para importar el proyecto:
+Clonar o descargar este repositorio. Luego, para importar el proyecto en Eclipse:
 
 1. Seleccionar **[File > New > Makefile Project with Existing Code]**. 
 2. En la nueva ventana:
-   - En **[Existing Code Location]** indicar el *path* al proyecto (usar el botón **[Browse...]**).
+   - En **[Existing Code Location]** indicar el *path* en donde se descargó o clonó el repositorio (usar el botón **[Browse...]**).
    - En **[Toolchain for Indexer]** seleccionar la opción *ARM Cross GCC* (¡importante!).
 
 3. El proyecto debe aparecer ahora en la vista *Project Explorer*: 
