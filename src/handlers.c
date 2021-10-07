@@ -8,7 +8,3 @@ void xPortSysTickHandler(void) {
 void vPortSVCHandler( void ) {
     return;
 }
-
-void Timer0IntHandler( void ) {
-    return;
-}

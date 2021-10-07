@@ -34,6 +34,7 @@ void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
+static void Timer0IntHandler(void);
 
 //*****************************************************************************
 //
@@ -44,9 +45,6 @@ extern int main(void);
 extern void xPortPendSVHandler(void);
 extern void xPortSysTickHandler(void);
 extern void vPortSVCHandler( void );
-extern void Timer0IntHandler( void );
-extern void vT2InterruptHandler( void );
-extern void vT3InterruptHandler( void );
 void vAssertCalled( const char *pcFile, unsigned long ulLine );
 
 //*****************************************************************************
@@ -238,6 +236,17 @@ IntDefaultHandler(void)
     {
     	vAssertCalled( __FILE__, __LINE__ );
     }
+}
+
+//*****************************************************************************
+//
+// This is the code that gets called when the processor receives a timer
+// interrupt.
+//
+//*****************************************************************************
+static void
+Timer0IntHandler( void ) {
+    return;
 }
 
 //*****************************************************************************
