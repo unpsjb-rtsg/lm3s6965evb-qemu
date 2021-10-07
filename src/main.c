@@ -1,8 +1,8 @@
-/*
- * Demo application.
- */
-
 /*************************************************************************
+ * Programa de prueba basado para LM3S6965.
+ *
+ * Basado en el demo provisto por FreeRTOS, para ejecutar sobre QEMU.
+ *
  * Please ensure to read http://www.freertos.org/portlm3sx965.html
  * which provides information on configuring and running this demo for the
  * various Luminary Micro EKs.
@@ -22,35 +22,12 @@
 #include "grlib.h"
 #include "osram128x64x4.h"
 #include "uart.h"
-
 #include "bitmap.h"
 
 /*-----------------------------------------------------------*/
 
-/* The time between cycles of the 'check' functionality (defined within the
-tick hook. */
-#define mainCHECK_DELAY                     ( ( TickType_t ) 5000 / portTICK_PERIOD_MS )
-
-/* Task stack sizes. */
-#define mainOLED_TASK_STACK_SIZE            ( configMINIMAL_STACK_SIZE + 40 )
-#define mainMESSAGE_BUFFER_TASKS_STACK_SIZE ( 100 )
-
-/* Task priorities. */
-#define mainCHECK_TASK_PRIORITY             ( tskIDLE_PRIORITY + 3 )
-#define mainSEM_TEST_PRIORITY               ( tskIDLE_PRIORITY + 1 )
-#define mainCREATOR_TASK_PRIORITY           ( tskIDLE_PRIORITY + 3 )
-#define mainGEN_QUEUE_TASK_PRIORITY         ( tskIDLE_PRIORITY )
-
-/* The maximum number of message that can be waiting for display at any one
-time. */
-#define mainOLED_QUEUE_SIZE                 ( 3 )
-
-/* Dimensions the buffer into which the jitter time is written. */
+/* Dimensions the buffer for text messages. */
 #define mainMAX_MSG_LEN                     25
-
-/* The period of the system clock in nano seconds.  This is used to calculate
-the jitter time in nano seconds. */
-#define mainNS_PER_CLOCK                    ( ( uint32_t ) ( ( 1.0 / ( double ) configCPU_CLOCK_HZ ) * 1000000000.0 ) )
 
 /* Constants used when writing strings to the display. */
 #define mainCHARACTER_HEIGHT                ( 9 )
@@ -61,11 +38,6 @@ the jitter time in nano seconds. */
 #define ulSSI_FREQUENCY                     ( 3500000UL )
 /*-----------------------------------------------------------*/
 
-void xPortPendSVHandler(void);
-void xPortSysTickHandler(void);
-void vPortSVCHandler( void );
-void Timer0IntHandler( void );
-
 /*
  * Configure the hardware for the demo.
  */
@@ -75,11 +47,6 @@ static void prvSetupHardware( void );
  * Basic polling UART write function.
  */
 static void prvPrintString( const char * pcString );
-
-/*-----------------------------------------------------------*/
-
-/* The welcome text. */
-const char * const pcWelcomeMessage = "   www.FreeRTOS.org";
 
 /*-----------------------------------------------------------*/
 
@@ -109,12 +76,12 @@ int main( void )
     vOLEDInit( ulSSI_FREQUENCY );
 
     /* Hello World! */
-    // print ...
     static char cMessage[ mainMAX_MSG_LEN ];
 
     sprintf(cMessage, "Hello World!");
     vOLEDStringDraw( cMessage, 0, 0, mainFULL_SCALE );
 
+    prvPrintString("hello world!\n\r");
 
     /* Will only get here if there was insufficient memory to create the idle
     task. */
@@ -166,7 +133,7 @@ void vAssertCalled( const char *pcFile, uint32_t ulLine )
     }
 }
 
-char * _sbrk_r (struct _reent *r, int incr)
+char* _sbrk_r (struct _reent *r, int incr)
 {
     /* Just to keep the linker quiet. */
     ( void ) r;
@@ -178,19 +145,7 @@ char * _sbrk_r (struct _reent *r, int incr)
     return NULL;
 }
 
-__error__(char *pcFilename, unsigned long ulLine) {
+int __error__(char *pcFilename, unsigned long ulLine) {
     return 0;
 }
 
-void xPortPendSVHandler(void) {
-    return;
-}
-void xPortSysTickHandler(void) {
-    return;
-}
-void vPortSVCHandler( void ) {
-    return;
-}
-void Timer0IntHandler( void ) {
-    return;
-}
