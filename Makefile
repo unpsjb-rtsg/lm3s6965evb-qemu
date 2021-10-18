@@ -32,6 +32,8 @@ BUILD_DIR = ./build
 SRC += $(wildcard ./src/*.c)
 SRC += $(wildcard ./libs/FreeRTOS/*.c)
 SRC += ./libs/FreeRTOS/portable/ARM_CM3/port.c
+SRC += ./libs/Tracealyzer/trcKernelPort.c
+SRC += ./libs/Tracealyzer/trcSnapshotRecorder.c
 OBJECTS = $(SRC:.c=.o)
 
 ###############################################################################
@@ -43,6 +45,8 @@ INCLUDE_PATHS += -I./src
 INCLUDE_PATHS += -I./board/lm3s6965evb/drivers
 INCLUDE_PATHS += -I./libs/FreeRTOS/include
 INCLUDE_PATHS += -I./libs/FreeRTOS/portable/ARM_CM3
+INCLUDE_PATHS += -I./libs/Tracealyzer/config
+INCLUDE_PATHS += -I./libs/Tracealyzer/include
 
 ###############################################################################
 #

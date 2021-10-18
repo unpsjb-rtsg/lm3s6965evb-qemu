@@ -46,6 +46,11 @@
 #define TASK2_PERIOD 	4000
 #define TASK3_PERIOD 	6000
 
+/* Tasks WCETs. */
+#define TASK1_WCET		1000
+#define TASK2_WCET		1000
+#define TASK3_WCET		1000
+
 /*-----------------------------------------------------------*/
 
 /*
@@ -59,7 +64,12 @@ static void prvSetupHardware( void );
 static void prvPrintString( const char * pcString );
 
 /*
- * Task.
+ * Busy wait the specified number of ticks.
+ */
+static void vBusyWait( TickType_t ticks );
+
+/*
+ * Periodic task.
  */
 static void prvTask( void* pvParameters );
 
@@ -72,11 +82,27 @@ void ( *vOLEDStringDraw )( const char *, uint32_t, uint32_t, unsigned char ) = N
 void ( *vOLEDImageDraw )( const unsigned char *, uint32_t, uint32_t, uint32_t, uint32_t ) = NULL;
 void ( *vOLEDClear )( void ) = NULL;
 
+/*-----------------------------------------------------------*/
+
+struct xTaskStruct {
+	TickType_t wcet;
+	TickType_t period;
+};
+
+typedef struct xTaskStruct xTask;
+
+xTask task1 = { TASK1_WCET, TASK1_PERIOD };
+xTask task2 = { TASK2_WCET, TASK2_PERIOD };
+xTask task3 = { TASK3_WCET, TASK3_PERIOD };
+
 /*************************************************************************
  * Main
  *************************************************************************/
 int main( void )
 {
+	/* Initialise the trace recorder. */
+	vTraceEnable( TRC_INIT );
+
     prvSetupHardware();
 
     /* Map the OLED access functions to the driver functions that are appropriate
@@ -95,13 +121,15 @@ int main( void )
     sprintf(cMessage, "Hello World!");
     vOLEDStringDraw( cMessage, 0, 0, mainFULL_SCALE );
 
-    /* Print "Start!" to the serial. */
+    /* Print "Start!" to the UART. */
     prvPrintString("Start!\n\r");
 
     /* Creates the periodic tasks. */
-    xTaskCreate( prvTask, "T1", configMINIMAL_STACK_SIZE + 50, (void*) TASK1_PERIOD, configMAX_PRIORITIES - 1, NULL );
-    xTaskCreate( prvTask, "T2", configMINIMAL_STACK_SIZE + 50, (void*) TASK2_PERIOD, configMAX_PRIORITIES - 2, NULL );
-    xTaskCreate( prvTask, "T3", configMINIMAL_STACK_SIZE + 50, (void*) TASK3_PERIOD, configMAX_PRIORITIES - 3, NULL );
+    xTaskCreate( prvTask, "T1", configMINIMAL_STACK_SIZE + 50, (void*) &task1, configMAX_PRIORITIES - 1, NULL );
+    xTaskCreate( prvTask, "T2", configMINIMAL_STACK_SIZE + 50, (void*) &task2, configMAX_PRIORITIES - 2, NULL );
+    xTaskCreate( prvTask, "T3", configMINIMAL_STACK_SIZE + 50, (void*) &task3, configMAX_PRIORITIES - 3, NULL );
+
+    vTraceEnable( TRC_START );
 
     /* Launch the scheduler. */
     vTaskStartScheduler();
@@ -141,12 +169,26 @@ static void prvPrintString( const char * pcString )
 }
 /*-----------------------------------------------------------*/
 
+static void vBusyWait( TickType_t ticks )
+{
+    TickType_t elapsedTicks = 0;
+    TickType_t currentTick = 0;
+    while ( elapsedTicks < ticks ) {
+        currentTick = xTaskGetTickCount();
+        while ( currentTick == xTaskGetTickCount() ) {
+            asm("nop");
+        }
+        elapsedTicks++;
+    }
+}
+/*-----------------------------------------------------------*/
+
 void prvTask( void *pvParameters )
 {
 	char cMessage[ mainMAX_MSG_LEN ];
 	unsigned int uxReleaseCount = 0;
 	TickType_t pxPreviousWakeTime = 0;
-	TickType_t xPeriod = (TickType_t) pvParameters;
+	xTask *task = (xTask*) pvParameters;
 
 	for( ;; )
 	{
@@ -154,7 +196,9 @@ void prvTask( void *pvParameters )
 
         prvPrintString( cMessage );
 
-		vTaskDelayUntil( &pxPreviousWakeTime, xPeriod );
+        vBusyWait( task->wcet );
+
+		vTaskDelayUntil( &pxPreviousWakeTime, task->period );
 
 		uxReleaseCount += 1;
 	}
