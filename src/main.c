@@ -8,6 +8,10 @@
  * various Luminary Micro EKs.
  *************************************************************************/
 
+/* FreeRTOS */
+#include "FreeRTOS.h"
+#include "task.h"
+
 /* Standard includes. */
 #include <stdio.h>
 #include <string.h>
@@ -36,6 +40,12 @@
 #define mainMAX_ROWS_64                     ( mainCHARACTER_HEIGHT * 7 )
 #define mainFULL_SCALE                      ( 15 )
 #define ulSSI_FREQUENCY                     ( 3500000UL )
+
+/* Tasks periods. */
+#define TASK1_PERIOD 	3000
+#define TASK2_PERIOD 	4000
+#define TASK3_PERIOD 	6000
+
 /*-----------------------------------------------------------*/
 
 /*
@@ -47,6 +57,11 @@ static void prvSetupHardware( void );
  * Basic polling UART write function.
  */
 static void prvPrintString( const char * pcString );
+
+/*
+ * Task.
+ */
+static void prvTask( void* pvParameters );
 
 /*-----------------------------------------------------------*/
 
@@ -75,13 +90,21 @@ int main( void )
     /* Initialise the OLED and display a startup message. */
     vOLEDInit( ulSSI_FREQUENCY );
 
-    /* Hello World! */
+    /* Print Hello World! to the OLED display. */
     static char cMessage[ mainMAX_MSG_LEN ];
-
     sprintf(cMessage, "Hello World!");
     vOLEDStringDraw( cMessage, 0, 0, mainFULL_SCALE );
 
-    prvPrintString("hello world!\n\r");
+    /* Print "Start!" to the serial. */
+    prvPrintString("Start!\n\r");
+
+    /* Creates the periodic tasks. */
+    xTaskCreate( prvTask, "T1", configMINIMAL_STACK_SIZE + 50, (void*) TASK1_PERIOD, configMAX_PRIORITIES - 1, NULL );
+    xTaskCreate( prvTask, "T2", configMINIMAL_STACK_SIZE + 50, (void*) TASK2_PERIOD, configMAX_PRIORITIES - 2, NULL );
+    xTaskCreate( prvTask, "T3", configMINIMAL_STACK_SIZE + 50, (void*) TASK3_PERIOD, configMAX_PRIORITIES - 3, NULL );
+
+    /* Launch the scheduler. */
+    vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle
     task. */
@@ -115,6 +138,28 @@ static void prvPrintString( const char * pcString )
         UARTCharPut( UART0_BASE, *pcString );
         pcString++;
     }
+}
+/*-----------------------------------------------------------*/
+
+void prvTask( void *pvParameters )
+{
+	char cMessage[ mainMAX_MSG_LEN ];
+	unsigned int uxReleaseCount = 0;
+	TickType_t pxPreviousWakeTime = 0;
+	TickType_t xPeriod = (TickType_t) pvParameters;
+
+	for( ;; )
+	{
+        sprintf( cMessage, "%s - %u\n\r", pcTaskGetTaskName( NULL ), uxReleaseCount );
+
+        prvPrintString( cMessage );
+
+		vTaskDelayUntil( &pxPreviousWakeTime, xPeriod );
+
+		uxReleaseCount += 1;
+	}
+
+	vTaskDelete( NULL );
 }
 /*-----------------------------------------------------------*/
 
