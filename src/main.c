@@ -11,6 +11,7 @@
 /* Standard includes. */
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 /* Hardware library includes. */
 #include "hw_memmap.h"
