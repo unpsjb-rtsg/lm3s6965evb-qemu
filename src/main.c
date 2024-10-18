@@ -8,6 +8,10 @@
  * various Luminary Micro EKs.
  *************************************************************************/
 
+/* FreeRTOS */
+#include "FreeRTOS.h"
+#include "task.h"
+
 /* Standard includes. */
 #include <stdio.h>
 #include <string.h>
@@ -37,6 +41,17 @@
 #define mainMAX_ROWS_64                     ( mainCHARACTER_HEIGHT * 7 )
 #define mainFULL_SCALE                      ( 15 )
 #define ulSSI_FREQUENCY                     ( 3500000UL )
+
+/* Tasks periods. */
+#define TASK1_PERIOD 	3000
+#define TASK2_PERIOD 	4000
+#define TASK3_PERIOD 	6000
+
+/* Tasks WCETs. */
+#define TASK1_WCET		1000
+#define TASK2_WCET		1000
+#define TASK3_WCET		1000
+
 /*-----------------------------------------------------------*/
 
 /*
@@ -49,6 +64,16 @@ static void prvSetupHardware( void );
  */
 static void prvPrintString( const char * pcString );
 
+/*
+ * Busy wait the specified number of ticks.
+ */
+static void vBusyWait( TickType_t ticks );
+
+/*
+ * Periodic task.
+ */
+static void prvTask( void* pvParameters );
+
 /*-----------------------------------------------------------*/
 
 /* Functions to access the OLED.  The one used depends on the dev kit
@@ -58,11 +83,27 @@ void ( *vOLEDStringDraw )( const char *, uint32_t, uint32_t, unsigned char ) = N
 void ( *vOLEDImageDraw )( const unsigned char *, uint32_t, uint32_t, uint32_t, uint32_t ) = NULL;
 void ( *vOLEDClear )( void ) = NULL;
 
+/*-----------------------------------------------------------*/
+
+struct xTaskStruct {
+	TickType_t wcet;
+	TickType_t period;
+};
+
+typedef struct xTaskStruct xTask;
+
+xTask task1 = { TASK1_WCET, TASK1_PERIOD };
+xTask task2 = { TASK2_WCET, TASK2_PERIOD };
+xTask task3 = { TASK3_WCET, TASK3_PERIOD };
+
 /*************************************************************************
  * Main
  *************************************************************************/
 int main( void )
 {
+	/* Initialise the trace recorder. */
+	vTraceEnable( TRC_INIT );
+
     prvSetupHardware();
 
     /* Map the OLED access functions to the driver functions that are appropriate
@@ -76,13 +117,23 @@ int main( void )
     /* Initialise the OLED and display a startup message. */
     vOLEDInit( ulSSI_FREQUENCY );
 
-    /* Hello World! */
+    /* Print Hello World! to the OLED display. */
     static char cMessage[ mainMAX_MSG_LEN ];
-
     sprintf(cMessage, "Hello World!");
     vOLEDStringDraw( cMessage, 0, 0, mainFULL_SCALE );
 
-    prvPrintString("hello world!\n\r");
+    /* Print "Start!" to the UART. */
+    prvPrintString("Start!\n\r");
+
+    /* Creates the periodic tasks. */
+    xTaskCreate( prvTask, "T1", configMINIMAL_STACK_SIZE + 50, (void*) &task1, configMAX_PRIORITIES - 1, NULL );
+    xTaskCreate( prvTask, "T2", configMINIMAL_STACK_SIZE + 50, (void*) &task2, configMAX_PRIORITIES - 2, NULL );
+    xTaskCreate( prvTask, "T3", configMINIMAL_STACK_SIZE + 50, (void*) &task3, configMAX_PRIORITIES - 3, NULL );
+
+    vTraceEnable( TRC_START );
+
+    /* Launch the scheduler. */
+    vTaskStartScheduler();
 
     /* Will only get here if there was insufficient memory to create the idle
     task. */
@@ -116,6 +167,44 @@ static void prvPrintString( const char * pcString )
         UARTCharPut( UART0_BASE, *pcString );
         pcString++;
     }
+}
+/*-----------------------------------------------------------*/
+
+static void vBusyWait( TickType_t ticks )
+{
+    TickType_t elapsedTicks = 0;
+    TickType_t currentTick = 0;
+    while ( elapsedTicks < ticks ) {
+        currentTick = xTaskGetTickCount();
+        while ( currentTick == xTaskGetTickCount() ) {
+            asm("nop");
+        }
+        elapsedTicks++;
+    }
+}
+/*-----------------------------------------------------------*/
+
+void prvTask( void *pvParameters )
+{
+	char cMessage[ mainMAX_MSG_LEN ];
+	unsigned int uxReleaseCount = 0;
+	TickType_t pxPreviousWakeTime = 0;
+	xTask *task = (xTask*) pvParameters;
+
+	for( ;; )
+	{
+        sprintf( cMessage, "%s - %u\n\r", pcTaskGetTaskName( NULL ), uxReleaseCount );
+
+        prvPrintString( cMessage );
+
+        vBusyWait( task->wcet );
+
+		vTaskDelayUntil( &pxPreviousWakeTime, task->period );
+
+		uxReleaseCount += 1;
+	}
+
+	vTaskDelete( NULL );
 }
 /*-----------------------------------------------------------*/
 

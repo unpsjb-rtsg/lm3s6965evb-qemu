@@ -30,6 +30,10 @@ BUILD_DIR = ./build
 # Source code.
 #
 SRC += $(wildcard ./src/*.c)
+SRC += $(wildcard ./libs/FreeRTOS/*.c)
+SRC += ./libs/FreeRTOS/portable/ARM_CM3/port.c
+SRC += ./libs/Tracealyzer/trcKernelPort.c
+SRC += ./libs/Tracealyzer/trcSnapshotRecorder.c
 OBJECTS = $(SRC:.c=.o)
 
 ###############################################################################
@@ -39,6 +43,10 @@ OBJECTS = $(SRC:.c=.o)
 INCLUDE_PATHS += -I.
 INCLUDE_PATHS += -I./src
 INCLUDE_PATHS += -I./board/lm3s6965evb/drivers
+INCLUDE_PATHS += -I./libs/FreeRTOS/include
+INCLUDE_PATHS += -I./libs/FreeRTOS/portable/ARM_CM3
+INCLUDE_PATHS += -I./libs/Tracealyzer/config
+INCLUDE_PATHS += -I./libs/Tracealyzer/include
 
 ###############################################################################
 #
@@ -124,6 +132,12 @@ $(BUILD_DIR)/$(APP_NAME).bin: $(BUILD_DIR)/$(APP_NAME).elf
 	
 size: $(BUILD_DIR)/$(APP_NAME).elf
 	$(SIZE) $<
+
+qemu-vnc: all
+	qemu-system-arm -kernel ./build/main.elf -machine lm3s6965evb -vnc :0 -serial mon:stdio
+
+qemu-uart: all
+	qemu-system-arm -kernel ./build/main.elf -machine lm3s6965evb -nographic
 
 DEPS = $(OBJECTS:.o=.d)
 -include $(DEPS)
