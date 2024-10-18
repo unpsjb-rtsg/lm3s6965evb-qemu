@@ -133,5 +133,11 @@ $(BUILD_DIR)/$(APP_NAME).bin: $(BUILD_DIR)/$(APP_NAME).elf
 size: $(BUILD_DIR)/$(APP_NAME).elf
 	$(SIZE) $<
 
+qemu-vnc: all
+	qemu-system-arm -kernel ./build/main.elf -machine lm3s6965evb -vnc :0 -serial mon:stdio
+
+qemu-uart: all
+	qemu-system-arm -kernel ./build/main.elf -machine lm3s6965evb -nographic
+
 DEPS = $(OBJECTS:.o=.d)
 -include $(DEPS)

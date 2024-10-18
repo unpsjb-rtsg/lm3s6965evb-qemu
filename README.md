@@ -2,6 +2,23 @@
 
 Programa de ejemplo que imprime el mensaje `Hello World!`, basado en la [demo de FreeRTOS para QEMU](https://www.freertos.org/cortex-m3-qemu-lm3S6965-demo.html).
 
+## Docker
+
+Generar la imagen docker con:
+```bash
+docker build -t .
+```
+
+Para compilar el proyecto:
+```bash
+docker.make
+```
+
+Para ejecutar:
+```bash
+docker.make qemu
+```
+
 ## Importar y compilar en Eclipse
 
 Clonar o descargar este repositorio. Luego, para importar el proyecto en Eclipse:
@@ -24,7 +41,7 @@ Para compilarlo se puede:
 
 Si el proyecto compilo correctamente, en la vista **[Console]** debe indicarse que se generó correctamente el archivo `build/main.elf`.
 
-## Ejecutar con QEMU
+## Debugging desde Eclipse con QEMU
 
 Primero configurar el perfil de _debugging_:
 
