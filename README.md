@@ -19,6 +19,8 @@ Para ejecutar:
 docker.make qemu
 ```
 
+Es posible visualizar la salida gráfica de QEMU mediante VNC conectandose a `:0`.
+
 ## Importar y compilar en Eclipse
 
 Clonar o descargar este repositorio. Luego, para importar el proyecto en Eclipse:
