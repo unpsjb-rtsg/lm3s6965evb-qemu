@@ -114,6 +114,8 @@ MAKE_FLAGS += --no-print-directory
 #
 all: $(BUILD_DIR)/$(APP_NAME).bin size
 
+build: all
+
 clean:
 	+@echo "Cleaning files..."
 	@rm -f $(BUILD_DIR)/$(APP_NAME).bin $(BUILD_DIR)/$(APP_NAME).elf $(OBJECTS) $(DEPS)
