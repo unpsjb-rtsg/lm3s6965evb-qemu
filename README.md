@@ -21,6 +21,8 @@ Para ejecutar:
 docker.make qemu
 ```
 
+Para terminar la ejecución, presionar `C^A X`.
+
 Es posible visualizar la salida gráfica de QEMU mediante VNC conectandose a `:0`.
 
 ## Importar y compilar en Eclipse
