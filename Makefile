@@ -141,5 +141,8 @@ qemu: all
 qemu-uart: all
 	qemu-system-arm -kernel ./build/main.elf -machine lm3s6965evb -nographic
 
+qemu-gdb: all
+	qemu-system-arm -kernel ./build/main.elf -S -s -machine lm3s6965evb -vnc :0 -serial mon:stdio
+
 DEPS = $(OBJECTS:.o=.d)
 -include $(DEPS)
