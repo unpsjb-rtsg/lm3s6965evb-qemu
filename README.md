@@ -83,7 +83,23 @@ Primero configurar el perfil de _debugging_:
     - En la pestaña **[Common]**, seleccionar la opción **[Shared file:]**, indicando en el campo el nombre del proyecto. De esta manera la configuración para debugging es guardada en un archivo `*.launch` dentro del proyecto.
     - Hacer clic en el botón **[Apply]**, no cerrar la ventana aún.
 
-A continuación, abrir una terminal y ejecutar el siguiente comando:
+Luego, para ejecutar QEMU, tenemos dos opciones:
+
+### Ejecutar QEMU localmente
+
+Si se instalo QEMU localmente (por ejemplo en el directorio `~/setr/qemu`, ejecutar el siguiente comando desde una terminal:
+
+```
+~/setr/qemu/bin/qemu-system-arm -kernel ./build/main.elf -S -s -machine lm3s6965evb 
+```
+
+Luego, en Eclipse hacemos clic en el botón **[Debug]**, y cuando Eclipse nos pregunte si queremos cambiar a la perspectiva de _Debugging_ le decimos que sí (_switch_).
+
+Si todo funcionó correctamente, se alcanza el _breakpoint_ en la función `main()` y la ejecución queda detenida en ese punto. Seleccionar **[Run > Resume]** (o presionar **F8**).
+
+### Ejecutar QEMU con Docker
+
+Si se tiene la imagen Docker, abrir una terminal y ejecutar el siguiente comando:
 
 ```bash
 $ ./docker.gdb
