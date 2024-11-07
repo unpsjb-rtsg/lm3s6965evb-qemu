@@ -1,8 +1,13 @@
+#
+# Modify example to build in Makefile.mine
+#
+-include Makefile.mine
+
 ############################################################################### 
 #
 # Name for the binary, hex and other output build files.
 # 
-APP_NAME=main
+APP_NAME=$(APP)
 DEBUG=1
 
 ############################################################################### 
@@ -29,6 +34,7 @@ BUILD_DIR = ./build
 #
 # Source code.
 #
+SRC += $(wildcard ./src/$(APP)/*.c)
 SRC += $(wildcard ./src/*.c)
 SRC += $(wildcard ./libs/FreeRTOS/*.c)
 SRC += ./libs/FreeRTOS/portable/ARM_CM3/port.c
@@ -42,6 +48,7 @@ OBJECTS = $(SRC:.c=.o)
 #
 INCLUDE_PATHS += -I.
 INCLUDE_PATHS += -I./src
+INCLUDE_PATHS += -I./src/example_app
 INCLUDE_PATHS += -I./board/lm3s6965evb/drivers
 INCLUDE_PATHS += -I./libs/FreeRTOS/include
 INCLUDE_PATHS += -I./libs/FreeRTOS/portable/ARM_CM3

@@ -48,3 +48,4 @@ language.settings.xml
 build/*.bin
 build/*.elf
 
+Makefile.mine
