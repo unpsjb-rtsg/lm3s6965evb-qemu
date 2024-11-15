@@ -7,7 +7,11 @@
 #
 # Name for the binary, hex and other output build files.
 # 
-APP_NAME=$(APP)
+ifeq ($(UNIQUE_BUILD_NAME), y)
+	APP_NAME=build
+else
+	APP_NAME=$(APP)
+endif
 DEBUG=1
 
 ############################################################################### 
