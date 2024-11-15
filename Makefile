@@ -1,7 +1,16 @@
+############################################################################### 
+#
+# Check if Makefile.mine exists
+#
+ifeq (,$(wildcard Makefile.mine))
+$(error El archivo Makefile.mine no existe. Crearlo a partir de Makefile.config)
+endif
+
+############################################################################### 
 #
 # Modify example to build in Makefile.mine
 #
--include Makefile.mine
+include Makefile.mine
 
 ############################################################################### 
 #
