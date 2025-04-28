@@ -22,4 +22,4 @@ RUN wget https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/dow
     && tar xfz xpack-openocd-0.11.0-4-linux-x64.tar.gz -C openocd --strip-components 1 \
     && rm -rf *.tar.gz
 
-ENV PATH "/home/dev/arm-none-eabi-gcc/bin:/home/dev/qemu/bin:/home/dev/openocd:$PATH"
+ENV PATH="/home/dev/arm-none-eabi-gcc/bin:/home/dev/qemu/bin:/home/dev/openocd:$PATH"

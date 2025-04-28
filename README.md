@@ -6,14 +6,14 @@ Programa de ejemplo que imprime el mensaje `Hello World!`, basado en la [demo de
 
 Generar la imagen docker con:
 ```bash
-docker build rtsg -t .
+$ make docker-build
 ```
 
-**Importante**: el script `docker.make` espera que la imagen se llame `rtsg`.
+Esto genera, si no existe ya, una imagen con el nombre `rtsg`.
 
 ## Línea de comando
 
-Desde una termina se puede compilar el proyecto mediante el siguiente comando:
+Desde una terminal se puede compilar el proyecto mediante el siguiente comando:
 ```bash
 $ ./docker.make
 ```

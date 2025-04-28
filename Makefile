@@ -155,6 +155,9 @@ $(BUILD_DIR)/$(APP_NAME).bin: $(BUILD_DIR)/$(APP_NAME).elf
 size: $(BUILD_DIR)/$(APP_NAME).elf
 	$(SIZE) $<
 
+docker-build:
+	docker build -t rtsg .
+
 qemu: all
 	qemu-system-arm -kernel $(BUILD_DIR)/$(APP_NAME).elf -machine lm3s6965evb -vnc :0 -serial mon:stdio
 
