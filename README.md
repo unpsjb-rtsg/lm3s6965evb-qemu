@@ -29,12 +29,12 @@ Se puede terminar la ejecución presionando `C^A X`. También es posible visuali
 
 Para importar el proyecto en Eclipse:
 
-1. Seleccionar **[File > New > Makefile Project with Existing Code]**. 
+1. Seleccionar **[File > New > Makefile Project with Existing Code]**.
 2. En la nueva ventana:
    - En **[Existing Code Location]** indicar el *path* en donde se descargó o clonó el repositorio (usar el botón **[Browse...]**).
    - En **[Toolchain for Indexer]** seleccionar la opción *ARM Cross GCC* (¡importante!).
 
-3. El proyecto debe aparecer ahora en la vista *Project Explorer*: 
+3. El proyecto debe aparecer ahora en la vista *Project Explorer*:
    - Hacer clic derecho sobre el mismo, y seleccionar **[Properties]** en el menú contextual.
    - En la nueva ventana, en la sección izquierda, seleccionar **[C/C++ Build > Settings]**. En la sección derecha de la ventana, hacer clic en la pestaña **[Toolchains]**. Verificar que el campo *Name* indique *GNU MCU Eclipse ARM Embedded GCC (arm-none-eabi-gcc)* o similar.
    - Hacer clic en **[Apply and Close]**.
@@ -90,7 +90,7 @@ Luego, para ejecutar QEMU, tenemos dos opciones:
 Si se instalo QEMU localmente (por ejemplo en el directorio `~/setr/qemu`, ejecutar el siguiente comando desde una terminal:
 
 ```
-~/setr/qemu/bin/qemu-system-arm -kernel ./build/main.elf -S -s -machine lm3s6965evb 
+~/setr/qemu/bin/qemu-system-arm -kernel ./build/main.elf -S -s -machine lm3s6965evb
 ```
 
 Luego, en Eclipse hacemos clic en el botón **[Debug]**, y cuando Eclipse nos pregunte si queremos cambiar a la perspectiva de _Debugging_ le decimos que sí (_switch_).
@@ -102,7 +102,7 @@ Si todo funcionó correctamente, se alcanza el _breakpoint_ en la función `main
 Si se tiene la imagen Docker, abrir una terminal y ejecutar el siguiente comando:
 
 ```bash
-$ ./docker.gdb
+$ ./docker.make gdb
 ```
 
 Luego, en Eclipse hacemos clic en el botón **[Debug]**, y cuando Eclipse nos pregunte si queremos cambiar a la perspectiva de _Debugging_ le decimos que sí (_switch_).
@@ -114,7 +114,7 @@ Se puede configurar una acción en Eclipse para ejecutar este *script* sin neces
 1. Ir al menú **[Run > External Tools > External Tools configurations]**.
 2. En la nueva ventana, crear una nueva configuración haciendo doble clic en **Program**.
 3. En el campo **[Name]** ingresar `docker.qemu-gdb` o cualquier nombre descriptivo que se quiera.
-4. En el campo **[Location]** ingresar el path completo al script `docker.gdb` del proyecto.
+4. En el campo **[Location]** ingresar el path completo al script `docker.make` del proyecto.
 5. En el campo **[Working directory]** ingresar el path completo al directorio del proyecto.
 6. Cliquear **[Apply]** para guardar los cambios.
 
