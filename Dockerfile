@@ -5,6 +5,7 @@ RUN apt-get update \
     ca-certificates \
     wget \
     make \
+    python3 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

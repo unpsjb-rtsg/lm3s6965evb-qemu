@@ -159,7 +159,7 @@ docker-build:
 	docker build -t rtsg .
 
 qemu: all
-	novnc_proxy --vnc localhost:5900
+	./runvnc.sh
 	qemu-system-arm -kernel $(BUILD_DIR)/$(APP_NAME).elf -machine lm3s6965evb -vnc :0 -serial mon:stdio
 
 qemu-uart: all
