@@ -23,7 +23,7 @@ Para ejecutar el programa en una máquina virtual QEMU, ejecutar:
 $ ./docker.make qemu
 ```
 
-Se puede terminar la ejecución presionando `C^A X`. También es posible visualizar la salida gráfica de QEMU mediante VNC conectandose a `:0`.
+Se puede terminar la ejecución presionando `C^A X`. También es posible visualizar la salida gráfica de QEMU mediante VNC conectandose con un cliente a `:0` o accediendo a [`localhost:6900/vnc.html`](http://localhost:6900/vnc.html).
 
 ## Importar y compilar en Eclipse
 
