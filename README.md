@@ -40,10 +40,9 @@ Para importar el proyecto en Eclipse:
     - En **[Existing Code Location]** indicar el *path* en donde se descargó o clonó el repositorio (usar el botón **[Browse...]**).
     - En **[Toolchain for Indexer]** seleccionar la opción *ARM Cross GCC* (¡importante!).
 
+Luego, para configurar el proceso de compilación hay dos alternativas:
 
-Para configurar el proceso de compilación:
-
-### Si se utilizará Docker:
+### Si se utiliza Docker:
 1. Seleccionar **[Project > Properties]**
 2. En la nueva ventana:
     - Seleccionar **[C/C++ Build > Settings]** en la lista de la izquierda.
@@ -54,13 +53,13 @@ Para configurar el proceso de compilación:
     - En **Data volumes** mapear el path `/app` con el path del proyecto.
     - Finalmente, cliquear **[Apply and close]**
 
-### Si no se utilizo la guía paso a paso:
+### Si se utilizo la guía de instalación paso a paso:
 El proyecto debe aparecer ahora en la vista *Project Explorer*:
    - Hacer clic derecho sobre el mismo y seleccionar **[Properties]** en el menú contextual.
    - En la nueva ventana, en la sección izquierda, seleccionar **[C/C++ Build > Settings]**. En la sección derecha de la ventana, hacer clic en la pestaña **[Toolchains]**. Verificar que el campo *Name* indique *GNU MCU Eclipse ARM Embedded GCC (arm-none-eabi-gcc)* o similar.
    - Hacer clic en **[Apply and Close]**.
 
-Luego, para compilar el proyecto se puede:
+Finalmente, para compilar el proyecto se puede:
 
 - Hacer clic derecho sobre el proyecto en la vista *Project Explorer* y seleccionar **[Build]** en el menú contextual.
 - Seleccionar en la barra de menúes de Eclipse **[Project > Build Project]**.
@@ -94,7 +93,7 @@ Primero configurar el perfil de _debugging_:
 
 Luego, para ejecutar QEMU, tenemos dos opciones:
 
-### Ejecutar QEMU localmente
+### Ejecutar QEMU instalado o descargado localmente
 
 Si se instalo QEMU localmente (por ejemplo en el directorio `~/setr/qemu`, ejecutar el siguiente comando desde una terminal:
 
@@ -106,7 +105,7 @@ Luego, en Eclipse hacemos clic en el botón **[Debug]**, y cuando Eclipse nos pr
 
 Si todo funcionó correctamente, se alcanza el _breakpoint_ en la función `main()` y la ejecución queda detenida en ese punto. Seleccionar **[Run > Resume]** (o presionar **F8**).
 
-### Ejecutar QEMU con Docker
+### Ejecutar QEMU en un contenedor Docker desde la línea de comando
 
 Si se tiene la imagen Docker, abrir una terminal y ejecutar el siguiente comando:
 
