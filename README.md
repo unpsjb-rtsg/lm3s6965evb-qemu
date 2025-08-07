@@ -13,7 +13,12 @@ Esto genera, si no existe ya, una imagen con el nombre `rtsg`.
 
 ## Línea de comando
 
-Desde una terminal se puede compilar el proyecto mediante el siguiente comando:
+Desde una terminal, dentro del directorio del proyecto, generar una copia con nombre `Makefile.mine` del archivo `Makefile.config`:
+```bash
+$ cp Makefile.config Makefile.mine
+```
+
+Luego, se puede compilar el proyecto mediante el siguiente comando:
 ```bash
 $ ./docker.make
 ```
@@ -29,18 +34,16 @@ Se puede terminar la ejecución presionando `C^A X`. También es posible visuali
 
 Para importar el proyecto en Eclipse:
 
-1. Seleccionar **[File > New > Makefile Project with Existing Code]**.
+1. Seleccionar **[File > Import]**.
 2. En la nueva ventana:
-   - En **[Existing Code Location]** indicar el *path* en donde se descargó o clonó el repositorio (usar el botón **[Browse...]**).
-   - En **[Toolchain for Indexer]** seleccionar la opción *ARM Cross GCC* (¡importante!).
+    - Seleccionar **[C/C++ > Existing Code as Makefile Project]** y hacer clic en **[Next >]**.
+    - En **[Existing Code Location]** indicar el *path* en donde se descargó o clonó el repositorio (usar el botón **[Browse...]**).
+    - En **[Toolchain for Indexer]** seleccionar la opción *ARM Cross GCC* (¡importante!).
 
-3. El proyecto debe aparecer ahora en la vista *Project Explorer*:
-   - Hacer clic derecho sobre el mismo, y seleccionar **[Properties]** en el menú contextual.
-   - En la nueva ventana, en la sección izquierda, seleccionar **[C/C++ Build > Settings]**. En la sección derecha de la ventana, hacer clic en la pestaña **[Toolchains]**. Verificar que el campo *Name* indique *GNU MCU Eclipse ARM Embedded GCC (arm-none-eabi-gcc)* o similar.
-   - Hacer clic en **[Apply and Close]**.
 
-Para configurar el proceso de compilación para que utilice la imagen Docker:
+Para configurar el proceso de compilación:
 
+### Si se utilizará Docker:
 1. Seleccionar **[Project > Properties]**
 2. En la nueva ventana:
     - Seleccionar **[C/C++ Build > Settings]** en la lista de la izquierda.
@@ -50,6 +53,12 @@ Para configurar el proceso de compilación para que utilice la imagen Docker:
     - En **Image** seleccionar `rtsg:latest`
     - En **Data volumes** mapear el path `/app` con el path del proyecto.
     - Finalmente, cliquear **[Apply and close]**
+
+### Si no se utilizo la guía paso a paso:
+El proyecto debe aparecer ahora en la vista *Project Explorer*:
+   - Hacer clic derecho sobre el mismo y seleccionar **[Properties]** en el menú contextual.
+   - En la nueva ventana, en la sección izquierda, seleccionar **[C/C++ Build > Settings]**. En la sección derecha de la ventana, hacer clic en la pestaña **[Toolchains]**. Verificar que el campo *Name* indique *GNU MCU Eclipse ARM Embedded GCC (arm-none-eabi-gcc)* o similar.
+   - Hacer clic en **[Apply and Close]**.
 
 Luego, para compilar el proyecto se puede:
 
