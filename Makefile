@@ -1,8 +1,26 @@
 ############################################################################### 
 #
+# Check if Makefile.mine exists
+#
+ifeq (,$(wildcard Makefile.mine))
+$(error El archivo Makefile.mine no existe. Crearlo a partir de Makefile.config)
+endif
+
+############################################################################### 
+#
+# Modify example to build in Makefile.mine
+#
+include Makefile.mine
+
+############################################################################### 
+#
 # Name for the binary, hex and other output build files.
 # 
-APP_NAME=main
+ifeq ($(UNIQUE_BUILD_NAME), y)
+	APP_NAME=build
+else
+	APP_NAME=$(APP)
+endif
 DEBUG=1
 
 ############################################################################### 
@@ -29,6 +47,7 @@ BUILD_DIR = ./build
 #
 # Source code.
 #
+SRC += $(wildcard ./src/$(APP)/*.c)
 SRC += $(wildcard ./src/*.c)
 SRC += $(wildcard ./libs/FreeRTOS/*.c)
 SRC += ./libs/FreeRTOS/portable/ARM_CM3/port.c
@@ -42,6 +61,7 @@ OBJECTS = $(SRC:.c=.o)
 #
 INCLUDE_PATHS += -I.
 INCLUDE_PATHS += -I./src
+INCLUDE_PATHS += -I./src/example_app
 INCLUDE_PATHS += -I./board/lm3s6965evb/drivers
 INCLUDE_PATHS += -I./libs/FreeRTOS/include
 INCLUDE_PATHS += -I./libs/FreeRTOS/portable/ARM_CM3
@@ -114,6 +134,8 @@ MAKE_FLAGS += --no-print-directory
 #
 all: $(BUILD_DIR)/$(APP_NAME).bin size
 
+build: all
+
 clean:
 	+@echo "Cleaning files..."
 	@rm -f $(BUILD_DIR)/$(APP_NAME).bin $(BUILD_DIR)/$(APP_NAME).elf $(OBJECTS) $(DEPS)
@@ -133,11 +155,18 @@ $(BUILD_DIR)/$(APP_NAME).bin: $(BUILD_DIR)/$(APP_NAME).elf
 size: $(BUILD_DIR)/$(APP_NAME).elf
 	$(SIZE) $<
 
-qemu-vnc: all
-	qemu-system-arm -kernel ./build/main.elf -machine lm3s6965evb -vnc :0 -serial mon:stdio
+docker-build:
+	docker build -t rtsg .
+
+qemu: all
+	./runvnc.sh
+	qemu-system-arm -kernel $(BUILD_DIR)/$(APP_NAME).elf -machine lm3s6965evb -vnc :0 -serial mon:stdio
 
 qemu-uart: all
-	qemu-system-arm -kernel ./build/main.elf -machine lm3s6965evb -nographic
+	qemu-system-arm -kernel $(BUILD_DIR)/$(APP_NAME).elf -machine lm3s6965evb -nographic
+
+qemu-gdb: all
+	qemu-system-arm -kernel $(BUILD_DIR)/$(APP_NAME).elf -S -s -machine lm3s6965evb -vnc :0 -serial mon:stdio
 
 DEPS = $(OBJECTS:.o=.d)
 -include $(DEPS)
